@@ -26,7 +26,7 @@ import com.ebizance.azul.stack.AzulStackMockImpl;
  * -Arguments-<br/>
  * file: Specify stack file path (e.g: C:/temp/rtpm_11212020/STACK.1.xml). The application will parse the indicated file only.<br/>
  * or<br/>
- * dir: Specify folder path (e.g: C:/temp/rtpm_11212020). The application parse all stack files inside the indicated folder.<br/>
+ * dir: Specify folder path (e.g: C:/temp/rtpm_11212020). The application will parse all stack files inside the indicated folder.<br/>
  * </code>
  * 
  * @author Yannick Robin
