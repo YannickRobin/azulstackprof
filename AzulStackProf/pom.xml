@@ -8,12 +8,15 @@
   <packaging>jar</packaging>
 
   <name>AzulStackProf</name>
-  <url>http://maven.apache.org</url>
+  <url>http://code.google.com/p/azulstackprof</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
+  <scm>
+  	<url>http://azulstackprof.googlecode.com/svn/trunk/azulstackprof</url>
+  </scm>
   <build>
   	<plugins>
   		<plugin>
