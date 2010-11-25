@@ -1,0 +1,28 @@
+import com.ebizance.azul.model.Thread;
+
+rule "Filter Welogic Kernel Default threads"
+	
+  when
+      $thread : Thread() eval(
+      		startsWith($thread.getName(), "ExecuteThread: '")
+      		&& endsWith($thread.getName(), "' for queue: 'weblogic.kernel.Default'")
+      	)
+  then 
+      $thread.setContinueParsing(true);
+end
+
+function boolean endsWith(String name,String text) {
+   if (name.endsWith(text))
+	return true;
+   else
+	return false;
+}
+
+
+function boolean startsWith(String name,String text) {
+   if (name.startsWith(text))
+	return true;
+   else
+	return false;
+}
+
