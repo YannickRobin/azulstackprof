@@ -3,7 +3,7 @@ package com.ebizance.azul.model;
 /**
  * This is a POJO representing the current parsed thread.<br/>
  * This object is loaded into drools engine so it can be used
- * to filter the thread to parse (e.g.: filter by name).
+ * to filter threads to parse (e.g.: filter by name).
  * 
  * @author Yannick Robin
  */
