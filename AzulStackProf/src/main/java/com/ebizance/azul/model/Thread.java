@@ -51,10 +51,10 @@ public class Thread {
 			state=STATE_RUNNING;
 		else if (sState.equals("sleeping"))
 			state=STATE_SLEEPING;
+		else if (sState.equals("I/O wait"))
+			state=STATE_IO_WAIT;		
 		else if (sState.equals("waiting on monitor"))
 			state=STATE_WAITING_ON_MONITOR;		
-		else if (sState.equals("I/O wait"))
-			state=STATE_IO_WAIT;
 		else if (sState.equals("acquiring monitor"))
 			state=STATE_ACQUIRING_MONITOR;		
 		else if (sState.startsWith("acquiring and releasing"))
