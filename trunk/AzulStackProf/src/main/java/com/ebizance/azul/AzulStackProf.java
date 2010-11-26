@@ -4,13 +4,17 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
+import com.ebizance.azul.model.Header;
+import com.ebizance.azul.model.Thread;
 import com.ebizance.azul.stack.AzulStack;
 import com.ebizance.azul.stack.AzulStackDroolsImpl;
 import com.ebizance.azul.stack.AzulStackMockImpl;
@@ -71,23 +75,45 @@ public class AzulStackProf
 	    	System.exit(-1);
     	}
     		
-    	Map<String,Integer> methods = null;
+    	System.out.println("\n***Azul Stack Prof parsing...\n");
+    	Map<String,Integer> methods = null;    	    	
+    	Map<Integer, Integer[]> threadStates = new HashMap<Integer, Integer[]>();    	   	
     	for (int i=0; i< stackFiles.length; i++)
     	{
     		AzulStack azulStack = new AzulStackDroolsImpl(dirpath + File.separator + stackFiles[i]);
     		azulStack.parse();
     		logger.info("Parsing " + stackFiles[i] + "...");
+    		
     		Map<String,Integer> methodsTemp = azulStack.getMethods();
     		if (methods == null)
     			methods = methodsTemp;
     		else
-    			mergeMethods(methods, methodsTemp);		
+    			mergeMethods(methods, methodsTemp);
+    		
+    		Header header = azulStack.getHeader();
+    		Integer[] threadStateCounter = new Integer[8];
+    		threadStateCounter[Thread.STATE_RUNNING]=azulStack.getRunningThreadCounter();
+    		threadStateCounter[Thread.STATE_SLEEPING]=azulStack.getSleepingThreadCounter();
+    		threadStateCounter[Thread.STATE_IO_WAIT]=azulStack.getIoWaitThreadCounter();
+    		threadStateCounter[Thread.STATE_WAITING_ON_MONITOR]=azulStack.getWaitingOnMonitorThreadCounter();
+    		threadStateCounter[Thread.STATE_ACQUIRING_MONITOR]=azulStack.getAcquiringThreadCounter();
+    		threadStateCounter[Thread.STATE_ACQUIRING_RELEASING]=azulStack.getAcquiringReleasingThreadCounter();    		
+    		threadStateCounter[Thread.STATE_WAITING_WEBLOGIC_SOCKET_MUXER]=azulStack.getWaitingWeblogicSocketMuxerThreadCounter();
+    		threadStateCounter[Thread.STATE_UNKNOWN]=azulStack.getUnknowThreadCounter();
+    		
+    		threadStates.put(header.getFileIndex(), threadStateCounter);
     	}
+
+    	System.out.println();
+    	System.out.println("***Azul Stack Prof result***");
+    	System.out.println();
+		displayThreads(threadStates);
+		System.out.println();
     	methods = sortHashMapByValues(methods, false);
-		displayMethods(methods);
+    	displayMethods(methods);
     }
 
-    private static void displayUsageMessage()
+	private static void displayUsageMessage()
     {
     	System.out.println();
     	System.out.println("Usage: mvn exec:java -Dexec.mainClass=\"com.ebizance.azul.AzulStackProf\" -Dexec.args=\"[file|dir]\"");
@@ -168,12 +194,37 @@ public class AzulStackProf
     	}
     	return someMap;
     } 
+
+    private static void displayThreads(Map<Integer, Integer[]> threadStates)
+    {
+    	System.out.println("Thread state report:");
+    	System.out.println("ID\tR\tS\tIO\tWOM\tAM\tAR\tWWSM\tU");
+    	
+        Vector<Integer> v = new Vector<Integer>(threadStates.keySet());
+        Collections.sort(v);
+
+    	for (Iterator it= v.iterator(); it.hasNext(); )
+    	{
+    		Integer stackId = (Integer)it.next();
+    		Integer[] states = threadStates.get(stackId);
+
+    		System.out.println(stackId + "\t"
+    				+ states[Thread.STATE_RUNNING] + "\t"
+    				+ states[Thread.STATE_SLEEPING] + "\t"
+    				+ states[Thread.STATE_IO_WAIT] + "\t"
+    				+ states[Thread.STATE_WAITING_ON_MONITOR] + "\t"
+    				+ states[Thread.STATE_ACQUIRING_MONITOR] + "\t"
+    				+ states[Thread.STATE_ACQUIRING_RELEASING] + "\t"
+    				+ states[Thread.STATE_WAITING_WEBLOGIC_SOCKET_MUXER] + "\t"
+    				+ states[Thread.STATE_UNKNOWN]);
+    	}
+	}
     
     private static void displayMethods(final Map<String,Integer> methods)
     {
-    	int i=1;
-    	System.out.println("\n\n***Azul Stack Prof result***");
+    	System.out.println("Hotspot method report:");
 		System.out.println("rank\tmethod\tcount");
+		int i=1;
     	for (Iterator <Map.Entry<String, Integer>> it=methods.entrySet().iterator(); it.hasNext(); )
     	{
 			Map.Entry<String, Integer> entry = it.next();

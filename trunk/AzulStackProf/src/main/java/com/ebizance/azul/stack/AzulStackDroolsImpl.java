@@ -63,11 +63,11 @@ public class AzulStackDroolsImpl extends AzulStack {
 	 */
 	@Override
 	public boolean doParseThread()
-	{		
+	{
 		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 		ksession.insert(thread);
 		ksession.fireAllRules();
-		ksession.dispose();
+		ksession.dispose();	
 		return thread.getContinueParsing();
 	}
 
