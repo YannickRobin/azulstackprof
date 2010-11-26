@@ -2,7 +2,9 @@ package com.ebizance.azul.stack;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -36,12 +38,20 @@ import com.ebizance.azul.model.Thread;
 public abstract class AzulStack {
 	
 	protected Header header;
-    protected Thread thread;
+	protected Thread thread;
     
     private static final Logger logger = Logger.getLogger(AzulStack.class);
-    private int threadCounter;
     private Map<String, Integer> methods = new HashMap<String, Integer>();
     private Document doc;
+    private int runningThreadCounter = 0;
+    private int sleepingThreadCounter = 0;
+    private int ioWaitThreadCounter = 0;
+    private int waitingOnMonitorThreadCounter = 0;
+	private int acquiringThreadCounter = 0;
+	private int acquiringReleasingThreadCounter = 0;	
+    private int waitingWeblogicSocketMuxerThreadCounter = 0;
+    private int unknowThreadCounter = 0;
+    
     
 	public AzulStack(String filePath)
 	{
@@ -100,7 +110,6 @@ public abstract class AzulStack {
 		NodeList childNodes = doc.getElementsByTagName("thread");
 		for (int i=0; i<childNodes.getLength(); i++)
 		{
-			threadCounter++;
 			Node childNode = childNodes.item(i);
 			setThread(childNode);
 			boolean doNotStop = doParseThread();
@@ -112,18 +121,57 @@ public abstract class AzulStack {
 	private void setThread(Node currentChildNode) {
 		thread = new Thread();
 		NodeList childNodes = currentChildNode.getChildNodes();
-		//Get thread name
+		
 		for (int i=0; i<childNodes.getLength(); i++)
 		{
 			Node childNode = childNodes.item(i);
 			
+			//Get thread name
 			if (childNode.getNodeName().equals("name"))
 				thread.setName(childNode.getTextContent());
+			
+			//Get thread state
+			if (childNode.getNodeName().equals("thread-state"))
+			{
+				NodeList threadStatechildNodes = childNode.getChildNodes();
+				for (int j=0; j<threadStatechildNodes.getLength(); j++)
+				{				
+					Node threadStateChildNode = threadStatechildNodes.item(j);
+					if (threadStateChildNode.getNodeName().equals("message"))
+					{
+						thread.setState(threadStateChildNode.getTextContent());
+					}
+				}					
+			}
 		}
 	}
 
 	private void parseThread(Node currentChildNode)
 	{
+		int state  = thread.getState();		
+		switch(state) {
+			case Thread.STATE_RUNNING:
+				runningThreadCounter++;
+				break;
+			case Thread.STATE_SLEEPING:
+				sleepingThreadCounter++;
+				break;
+			case Thread.STATE_IO_WAIT:
+				ioWaitThreadCounter++;
+				break;
+			case Thread.STATE_ACQUIRING_MONITOR:
+				acquiringThreadCounter++;
+				break;
+			case Thread.STATE_ACQUIRING_RELEASING:
+				acquiringReleasingThreadCounter ++;
+				break;				
+			case Thread.STATE_WAITING_WEBLOGIC_SOCKET_MUXER:
+				waitingWeblogicSocketMuxerThreadCounter++;
+				break;
+			case Thread.STATE_UNKNOWN:
+				unknowThreadCounter++;
+		}
+		
 		NodeList childNodes = currentChildNode.getChildNodes();
 		for (int i=0; i<childNodes.getLength(); i++)
 		{
@@ -213,13 +261,49 @@ public abstract class AzulStack {
 		}
 		return lineInfo;
 	}
-
-	public int getThreadCounter() {
-		return threadCounter;
-	}
-
+	
 	public Map<String, Integer> getMethods() {
 		return methods;
+	}
+	
+    public Header getHeader() {
+		return header;
+	}
+
+	public void setHeader(Header header) {
+		this.header = header;
+	}
+	
+	public int getRunningThreadCounter() {
+		return runningThreadCounter;
+	}
+
+	public int getSleepingThreadCounter() {
+		return sleepingThreadCounter;
+	}
+
+	public int getIoWaitThreadCounter() {
+		return ioWaitThreadCounter;
+	}
+	
+	public int getWaitingOnMonitorThreadCounter() {
+		return waitingOnMonitorThreadCounter;
+	}
+	
+	public int getAcquiringThreadCounter() {
+		return acquiringThreadCounter ;
+	}
+	
+	public int getWaitingWeblogicSocketMuxerThreadCounter() {
+		return waitingWeblogicSocketMuxerThreadCounter;
+	}
+	
+	public int getAcquiringReleasingThreadCounter() {
+		return acquiringReleasingThreadCounter;
+	}
+
+	public int getUnknowThreadCounter() {
+		return unknowThreadCounter;
 	}
 
 	public abstract boolean doParseFile();
