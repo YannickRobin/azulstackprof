@@ -1,0 +1,81 @@
+{{{
+publishsteps.dna
+****************
+
+            "DeliverPackageStep" DNA {
+                "code" String "DELIVER_PACKAGE_STEP",
+                "label" String "PUB_JOB_STATUS_ACTIVATING",
+                "parallel" Boolean "false",
+                "steps" StringArray [
+                    "DeliveryCreatePubVersion",
+                    "DeliverPackageMainStep",
+                    // The pub version is now fully delivered, but not yet activated
+                    "BuildRelationshipAllTableStep",
+                    "PreparePersistentData",
+//...
+            "PreparePersistentData" DNA {
+                "code" String "PREPARE_PERSISTENT_DATA_STEP",
+                "label" String "PUB_JOB_STATUS_ACTIVATING",
+                "class" String "com.bluemartini.publish.steps.PreparePersistentData",
+                "required" Boolean "false",
+                "init" DNA {
+                    "actions" StringArray [
+                        "preparePromotionEngine"
+                        //"prepareCaches"
+                    ]
+                }
+            },
+
+PublishStep
+***********
+PreparePersistentData.execute()
+  PreparePersistentData.initialisePersistentData()
+    PreparePersistentData.initPromotions()
+      //if( !isActionEnabled("preparePromotionEngine") ) return;
+      new PromotionEngine();
+
+PromotionEngine
+***************
+PromotionEngine.<init>
+
+        if( isPreview() ) {
+        	if(BMLog.logEnabled(BMLog.COMPONENT_PUBLISHING, BMLog.LEVEL_INFO)) {
+                BMLog.log(BMLog.COMPONENT_PUBLISHING, BMLog.LEVEL_INFO, "Initializing from fallback.");
+            }
+            initFallback();
+        } else {
+        	if(BMLog.logEnabled(BMLog.COMPONENT_PUBLISHING, BMLog.LEVEL_INFO)) {
+                BMLog.log(BMLog.COMPONENT_PUBLISHING, BMLog.LEVEL_INFO, "Initializing from persistent.");
+            }
+            initFromPersistent();
+        } 
+
+  PromotionEngine.initFromPersistent()
+
+
+        PromotionEngine engine = (PromotionEngine) pd.load(saveMode);
+
+        if( engine != null ) {
+            // we found a persistent copy - hurrah!
+            System.out.println("Loaded cached Promotion Engine for publish version "+pubVersion_);
+            promosByType_ = engine.promosByType_;
+            if(BMLog.logEnabled(BMLog.COMPONENT_PUBLISHING, BMLog.LEVEL_INFO)) {
+                BMLog.log(BMLog.COMPONENT_PUBLISHING, BMLog.LEVEL_INFO, "Found persistent data.");
+            }
+            prodSkuMatcher_ = engine.prodSkuMatcher_;
+        } else {
+            // no persistent data, use fallback and save for next time
+        	if(BMLog.logEnabled(BMLog.COMPONENT_PUBLISHING, BMLog.LEVEL_INFO)) {
+                BMLog.log(BMLog.COMPONENT_PUBLISHING, BMLog.LEVEL_INFO, "No persistent data found.");
+                BMLog.log(BMLog.COMPONENT_PUBLISHING, BMLog.LEVEL_INFO, "Creating promotion fallback.");
+            }
+            initFallback();
+            pd.setData(this);
+            if(BMLog.logEnabled(BMLog.COMPONENT_PUBLISHING, BMLog.LEVEL_INFO)) {
+                BMLog.log(BMLog.COMPONENT_PUBLISHING, BMLog.LEVEL_INFO, "promotion fallback created.");
+            }
+        }
+
+        saveMode = pd.shouldSave(saveMode);
+        pd.save(saveMode);
+}}}
