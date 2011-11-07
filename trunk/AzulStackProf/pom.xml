@@ -21,8 +21,8 @@
   	</developer>
   </developers>
   <scm>
-    <connection>scm:svn:https://azulstackprof.googlecode.com/svn/trunk/azulstackprof</connection>
-    <developerConnection>scm:svn:https://azulstackprof.googlecode.com/svn/trunk/azulstackprof</developerConnection>
+    <connection>scm:svn:https://azulstackprof.googlecode.com/svn/trunk/AzulStackProf</connection>
+    <developerConnection>scm:svn:https://azulstackprof.googlecode.com/svn/trunk/AzulStackProf</developerConnection>
     <url>http://code.google.com/p/azulstackprof/source/browse/</url>
   </scm>
   
