@@ -1,0 +1,26 @@
+import com.ebizance.azul.model.Header;
+
+rule "Filter everything"
+  dialect "java"	
+  when
+  	header:Header()
+  then 
+    header.setContinueParsing(true);
+end
+
+#rule "Filter Stack file by file size"
+#  dialect "java"	
+#  when
+#      header:Header(fileSize > 300)
+#  then 
+#      header.setContinueParsing(true);
+#end
+
+#rule "Filter Stack file by file index"
+#  dialect "java"	
+#  when
+#      header:Header(fileIndex == 107)
+#  then 
+#      header.setContinueParsing(true);
+#end
+
