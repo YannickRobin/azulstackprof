@@ -1,10 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.ebizance.azul</groupId>
   <artifactId>AzulStackProf</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0</version>
   <packaging>jar</packaging>
 
   <name>AzulStackProf</name>
@@ -21,9 +20,9 @@
   	</developer>
   </developers>
   <scm>
-    <connection>scm:svn:https://azulstackprof.googlecode.com/svn/trunk/azulstackprof</connection>
-    <developerConnection>scm:svn:https://azulstackprof.googlecode.com/svn/trunk/azulstackprof</developerConnection>
-    <url>http://code.google.com/p/azulstackprof/source/browse/</url>
+    <connection>scm:svn:https://azulstackprof.googlecode.com/svn/tags/AzulStackProf-1.0</connection>
+    <developerConnection>scm:svn:https://azulstackprof.googlecode.com/svn/tags/AzulStackProf-1.0</developerConnection>
+    <url>http://code.google.com/p/azulstackprof/source/browse/tags/AzulStackProf-1.0</url>
   </scm>
   
   <repositories>
