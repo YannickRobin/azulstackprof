@@ -23,9 +23,8 @@ import com.ebizance.azul.stack.AzulStackMockImpl;
  * Command line application to run AzulStackProf.<br/><br/>
  * 
  * <code>
- * Usage: mvn exec:java -Dexec.mainClass="com.ebizance.azul.AzulStackProf" -Dexec.args="[file|dir]"<br/><br/>
+ * Usage: java -Dlog4j.configuration=file:../conf/log4j.properties -jar ../lib/AzulStackProf-1.0-SNAPSHOT.jar [file|dir]<br/><br/>
  * 
- *
  *
  * -Arguments-<br/>
  * file: Specify stack file path (e.g: C:/temp/rtpm_11212020/STACK.1.xml). The application will parse the indicated file only.<br/>
@@ -75,14 +74,26 @@ public class AzulStackProf
 	    	System.exit(-1);
     	}
     		
-    	System.out.println("\n***Azul Stack Prof parsing...\n");
+    	
+    	logger.info("");
+    	logger.info("***Azul Stack Prof parsing...");
+    	logger.info("");
+    	
     	Map<String,Integer> methods = null;    	    	
     	Map<Integer, Integer[]> threadStates = new HashMap<Integer, Integer[]>();    	   	
     	for (int i=0; i< stackFiles.length; i++)
     	{
     		AzulStack azulStack = new AzulStackDroolsImpl(dirpath + File.separator + stackFiles[i]);
-    		azulStack.parse();
     		logger.info("Parsing " + stackFiles[i] + "...");
+    		try {
+    			azulStack.parse();
+    		}
+    		catch(Exception e)
+    		{
+    			logger.error("!!!Parsing error... Check XML file format...!!!");
+    			logger.error(e);
+    			System.exit(-1);
+    		}
     		
     		Map<String,Integer> methodsTemp = azulStack.getMethods();
     		if (methods == null)
@@ -104,9 +115,7 @@ public class AzulStackProf
     		threadStates.put(header.getFileIndex(), threadStateCounter);
     	}
 
-    	System.out.println();
-    	System.out.println("***Azul Stack Prof result***");
-    	System.out.println();
+    	logger.info("***Azul Stack Prof result***");
 		displayThreads(threadStates);
 		System.out.println();
     	methods = sortHashMapByValues(methods, false);
@@ -115,13 +124,12 @@ public class AzulStackProf
 
 	private static void displayUsageMessage()
     {
-    	System.out.println();
-    	System.out.println("Usage: mvn exec:java -Dexec.mainClass=\"com.ebizance.azul.AzulStackProf\" -Dexec.args=\"[file|dir]\"");
-    	System.out.println("\n-Arguments-");
-    	System.out.println("file\t Specify a stack file path (e.g: C:/temp/rtpm_11212020/STACK.1.xml). The application will parse the indicated file only.");
-    	System.out.println("or");
-    	System.out.println("dir\t Specify a folder path (e.g: C:/temp/rtpm_11212020). The application will parse all stack files inside the indicated folder.");
-    	System.out.println();
+		System.out.println("\nUsage: java -Dlog4j.configuration=file:../conf/log4j.properties -jar ../lib/AzulStackProf-1.0-SNAPSHOT.jar [file|dir]");
+		System.out.println("\n-Arguments-");
+		System.out.println("file\t Specify a stack file path (e.g: C:/temp/rtpm_11212020/STACK.1.xml). The application will parse the indicated file only.");
+		System.out.println("or");
+		System.out.println("dir\t Specify a folder path (e.g: C:/temp/rtpm_11212020). The application will parse all stack files inside the indicated folder.");
+		System.out.println("");
     }
     
     private static String[] getStackFiles(String dirPath)
