@@ -30,11 +30,13 @@ public class AzulStackDroolsImpl extends AzulStack {
     
     {       
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();        
-        kbuilder.add(ResourceFactory.newClassPathResource("AzulStackProf-Header.java.drl"), ResourceType.DRL);
-        kbuilder.add(ResourceFactory.newClassPathResource("AzulStackProf-Thread.java.drl"), ResourceType.DRL);
+        //kbuilder.add(ResourceFactory.newClassPathResource("AzulStackProf-Header.java.drl"), ResourceType.DRL);
+        //kbuilder.add(ResourceFactory.newClassPathResource("AzulStackProf-Thread.java.drl"), ResourceType.DRL);
+        kbuilder.add(ResourceFactory.newFileResource("../conf/AzulStackProf-Header.java.drl"), ResourceType.DRL);
+        kbuilder.add(ResourceFactory.newFileResource("../conf/AzulStackProf-Thread.java.drl"), ResourceType.DRL);     
         
 		if (kbuilder.hasErrors()) {
-          System.err.println(kbuilder.getErrors().toString());
+			logger.error(kbuilder.getErrors().toString());
         }         
 
         kbase = KnowledgeBaseFactory.newKnowledgeBase();
