@@ -69,7 +69,7 @@ ID	R	S	IO	WOM	AM	AR	WWSM	U
 30	1	13	4	0	0	0	4	0
 ```
 
-Then, you can copy this result into Excel using the following spreadsheet [AzulStackProf.xls](/AzulStackProf/media/AzulStackProf-Thread%20state%20chart.xls) to generate a chart.
+Then, you can copy this result into Excel using the following spreadsheet [AzulStackProf.xls](/AzulStackProf/media/AzulStackProf-Thread state chart.xls) to generate a chart.
 
 ![Thread states](/AzulStackProf/media/AzulStackProf.PNG)
 
