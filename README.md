@@ -14,7 +14,7 @@ Like HProf CPU profiling, RTPM periodically samples the stack of all running thr
 
 #Releases
 
-* [AzulStackProf-1.0-bin.zip](http://code.google.com/p/azulstackprof/downloads/detail?name=AzulStackProf-1.0-bin.zip)
+* [AzulStackProf-1.0-bin.zip](https://github.com/YannickRobin/azulstackprof/archive/AzulStackProf-1.0.zip)
 
 #Getting started
 
@@ -69,9 +69,9 @@ ID	R	S	IO	WOM	AM	AR	WWSM	U
 30	1	13	4	0	0	0	4	0
 ```
 
-Then, you can copy this result into Excel using the following spreadsheet [AzulStackProf.xls](http://azulstackprof.googlecode.com/svn/trunk/AzulStackProf/media/AzulStackProf-Thread%20state%20chart.xls) to generate a chart.
+Then, you can copy this result into Excel using the following spreadsheet [AzulStackProf.xls](/AzulStackProf/media/AzulStackProf-Thread%20state%20chart.xls) to generate a chart.
 
-![AzulStackProf.PNG](http://azulstackprof.googlecode.com/svn/trunk/AzulStackProf/media/AzulStackProf.PNG)
+![Thread states](/AzulStackProf/media/AzulStackProf.PNG)
 
 
 ##Hotspot method report
